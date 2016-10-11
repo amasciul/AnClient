@@ -4,12 +4,18 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 
-import java.util.ArrayList;
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity {
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
+public class MainActivity extends AppCompatActivity implements Callback<List<Deputy>> {
+    private static final String TAG = MainActivity.class.getSimpleName();
+
+    private RestClient client = new RestClient();
     private DeputyAdapter adapter;
 
     @Override
@@ -22,16 +28,21 @@ public class MainActivity extends AppCompatActivity {
         adapter = new DeputyAdapter();
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
+
+        client.listDeputies().enqueue(this);
     }
 
     @Override
-    protected void onStart() {
-        super.onStart();
-        List<Deputy> deputies = new ArrayList<>();
-
-        for (int i=0; i < 100; i++) {
-            deputies.add(new Deputy("John", "Smith"));
+    public void onResponse(Call<List<Deputy>> call, Response<List<Deputy>> response) {
+        if (response.isSuccessful()) {
+            adapter.setDeputies(response.body());
+        } else {
+            Log.e(TAG, "Error fetching deputies : " + response.errorBody());
         }
-        adapter.setDeputies(deputies);
+    }
+
+    @Override
+    public void onFailure(Call<List<Deputy>> call, Throwable t) {
+        Log.e(TAG, "Error fetching deputies", t);
     }
 }

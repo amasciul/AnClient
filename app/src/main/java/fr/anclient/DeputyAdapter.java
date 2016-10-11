@@ -7,10 +7,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class DeputyAdapter extends RecyclerView.Adapter<DeputyAdapter.ViewHolder> {
-    private List<Deputy> deputies;
+    private List<Deputy> deputies = new ArrayList<>();
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
