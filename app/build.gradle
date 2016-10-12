@@ -1,4 +1,7 @@
 apply plugin: 'com.android.application'
+apply plugin: 'checkstyle'
+
+check.dependsOn 'checkstyle'
 
 android {
     compileSdkVersion 24
@@ -22,6 +25,14 @@ android {
     lintOptions {
         lintConfig file('../gradle/lint.xml')
     }
+}
+
+task checkstyle(type: Checkstyle) {
+    configFile file("${project.rootDir}/config/checkstyle/checkstyle.xml")
+    source 'src'
+    include '**/*.java'
+    exclude '**/gen/**'
+    classpath = files()
 }
 
 dependencies {
